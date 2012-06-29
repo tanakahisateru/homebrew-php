@@ -7,6 +7,9 @@ class Php53Pcntl < Formula
   version '5.3.13'
 
   depends_on 'autoconf' => :build
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "ext/pcntl"
@@ -14,7 +17,7 @@ class Php53Pcntl < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--disable-dependency-tracking"
     system "make"
@@ -23,7 +26,7 @@ class Php53Pcntl < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-pcntl:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/pcntl.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

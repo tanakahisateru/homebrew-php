@@ -7,13 +7,16 @@ class Php53Xhprof < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'pcre'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "xhprof-#{version}/extension" do
       # See https://github.com/mxcl/homebrew/pull/5947
       ENV.universal_binary
 
-      system "phpize"
+      system "#{php.bin}/phpize"
       system "./configure", "--prefix=#{prefix}"
       system "make"
       prefix.install "modules/xhprof.so"
@@ -26,7 +29,7 @@ class Php53Xhprof < Formula
 
   def caveats; <<-EOS.undent
      To finish installing php53-xhprof:
-       * Add the following line to #{etc}/php.ini:
+       * Add the following line to #{php.config_path}/php.ini:
          [xhprof]
          extension="#{prefix}/xhprof.so"
        * Restart your webserver.

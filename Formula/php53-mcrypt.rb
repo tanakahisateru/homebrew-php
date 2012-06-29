@@ -8,6 +8,9 @@ class Php53Mcrypt < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'mcrypt'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "ext/mcrypt"
@@ -15,7 +18,7 @@ class Php53Mcrypt < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary unless Hardware.is_64_bit?
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--disable-dependency-tracking",
                           "--with-mcrypt=#{Formula.factory('mcrypt').prefix}"
@@ -25,7 +28,7 @@ class Php53Mcrypt < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-mcrypt:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/mcrypt.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

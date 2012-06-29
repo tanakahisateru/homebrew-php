@@ -8,6 +8,9 @@ class Php54Imagick < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'imagemagick'
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     Dir.chdir "imagick-#{version}" unless ARGV.build_head?
@@ -15,7 +18,7 @@ class Php54Imagick < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/imagick.so"
@@ -23,7 +26,7 @@ class Php54Imagick < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-imagick:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/imagick.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

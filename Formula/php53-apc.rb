@@ -8,6 +8,9 @@ class Php53Apc < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'pcre'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def patches
     # fixes "Incorrect version tag: APC 3.1.10 shows 3.1.9"
@@ -21,7 +24,7 @@ class Php53Apc < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--enable-apc-pthreadmutex"
     system "make"
@@ -30,7 +33,7 @@ class Php53Apc < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-apc:
-      * Add the following lines to #{etc}/php.ini:
+      * Add the following lines to #{php.config_path}/php.ini:
         [apc]
         extension="#{prefix}/apc.so"
         apc.enabled=1

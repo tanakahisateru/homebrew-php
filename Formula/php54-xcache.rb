@@ -6,12 +6,15 @@ class Php54Xcache < Formula
   md5 '0e30cdff075c635e475d70a5c37d0252'
 
   depends_on 'autoconf' => :build
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     # See https://github.com/mxcl/homebrew/issues/issue/69
     ENV.universal_binary unless Hardware.is_64_bit?
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--disable-debug",
                           "--disable-dependency-tracking"
@@ -21,7 +24,7 @@ class Php54Xcache < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-xcache:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         zend_extension="#{prefix}/xcache.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

@@ -9,12 +9,15 @@ class Php53Midgard2 < Formula
   depends_on 'autoconf' => :build
   depends_on 'pkg-config' => :build
   depends_on 'midgard2'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/midgard2.so"
@@ -22,7 +25,7 @@ class Php53Midgard2 < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-midgard2:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/midgard2.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

@@ -7,6 +7,9 @@ class Php53Redis < Formula
   head 'https://github.com/nicolasff/phpredis.git'
 
   depends_on 'autoconf' => :build
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   fails_with :clang do
     build 318
@@ -20,7 +23,7 @@ class Php53Redis < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/redis.so"
@@ -28,7 +31,7 @@ class Php53Redis < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-redis:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/redis.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

@@ -7,6 +7,9 @@ class Php53Mongo < Formula
   head 'https://github.com/mongodb/mongo-php-driver.git'
 
   depends_on 'autoconf' => :build
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "mongo-#{version}" unless ARGV.build_head?
@@ -14,7 +17,7 @@ class Php53Mongo < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/mongo.so"
@@ -22,7 +25,7 @@ class Php53Mongo < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-mongo:
-      * Add the following lines to #{etc}/php.ini:
+      * Add the following lines to #{php.config_path}/php.ini:
         [mongo]
         extension="#{prefix}/mongo.so"
       * Restart your webserver.

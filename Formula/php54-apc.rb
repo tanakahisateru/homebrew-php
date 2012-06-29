@@ -8,6 +8,9 @@ class Php54Apc < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'pcre'
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def patches
     # fixes "Incorrect version tag: APC 3.1.10 shows 3.1.9"
@@ -21,7 +24,7 @@ class Php54Apc < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--enable-apc-pthreadmutex"
     system "make"
@@ -30,7 +33,7 @@ class Php54Apc < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-apc:
-      * Add the following lines to #{etc}/php.ini:
+      * Add the following lines to #{php.config_path}/php.ini:
         [apc]
         extension="#{prefix}/apc.so"
         apc.enabled=1

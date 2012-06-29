@@ -8,6 +8,9 @@ class Php53Yaml < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'libyaml'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "yaml-#{version}" unless ARGV.build_head?
@@ -15,7 +18,7 @@ class Php53Yaml < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/yaml.so"
@@ -23,7 +26,7 @@ class Php53Yaml < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-yaml:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/yaml.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

@@ -7,6 +7,9 @@ class Php54Inclued < Formula
   head 'https://svn.php.net/repository/pecl/inclued/trunk', :using => :svn
 
   depends_on 'autoconf' => :build
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     Dir.chdir "inclued-#{version}" unless ARGV.build_head?
@@ -14,7 +17,7 @@ class Php54Inclued < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/inclued.so"
@@ -22,7 +25,7 @@ class Php54Inclued < Formula
 
   def caveats; <<-EOS.undent
    To finish installing php54-inclued:
-     * Add the following lines to #{etc}/php.ini:
+     * Add the following lines to #{php.config_path}/php.ini:
        extension="#{prefix}/inclued.so"
      * Restart your webserver.
      * Write a PHP page that calls "phpinfo();"

@@ -8,6 +8,9 @@ class Php54Pspell < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'aspell'
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     Dir.chdir "ext/pspell"
@@ -15,7 +18,7 @@ class Php54Pspell < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--disable-debug",
                           "--with-pspell=#{Formula.factory('aspell').prefix}"
@@ -25,7 +28,7 @@ class Php54Pspell < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-pspell:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/pspell.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

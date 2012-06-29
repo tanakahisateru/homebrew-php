@@ -8,6 +8,9 @@ class Php54Ssh2 < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'libssh2'
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     Dir.chdir "ssh2-#{version}" unless ARGV.build_head?
@@ -15,7 +18,7 @@ class Php54Ssh2 < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary unless Hardware.is_64_bit?
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}"
     system "make"
     prefix.install "modules/ssh2.so"
@@ -23,7 +26,7 @@ class Php54Ssh2 < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-ssh2:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         [ssh2]
         extension="#{prefix}/ssh2.so"
       * Restart your webserver.

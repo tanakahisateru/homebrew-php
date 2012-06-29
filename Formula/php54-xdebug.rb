@@ -6,6 +6,9 @@ class Php54Xdebug < Formula
   md5 '27d8ad8224ffab04d12eecb5997a4f5d'
 
   depends_on 'autoconf' => :build
+  depends_on 'php54'
+
+  def php; Formula.factory 'php54' end
 
   def install
     Dir.chdir "xdebug-#{version}"
@@ -13,7 +16,7 @@ class Php54Xdebug < Formula
     # See https://github.com/mxcl/homebrew/issues/issue/69
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--disable-debug",
                           "--disable-dependency-tracking",
@@ -24,7 +27,7 @@ class Php54Xdebug < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php54-xdebug:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         zend_extension="#{prefix}/xdebug.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"

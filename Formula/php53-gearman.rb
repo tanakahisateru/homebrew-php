@@ -8,6 +8,9 @@ class Php53Gearman < Formula
 
   depends_on 'autoconf' => :build
   depends_on 'gearman'
+  depends_on 'php53'
+
+  def php; Formula.factory 'php53' end
 
   def install
     Dir.chdir "gearman-#{version}" unless ARGV.build_head?
@@ -15,7 +18,7 @@ class Php53Gearman < Formula
     # See https://github.com/mxcl/homebrew/pull/5947
     ENV.universal_binary
 
-    system "phpize"
+    system "#{php.bin}/phpize"
     system "./configure", "--prefix=#{prefix}",
                           "--with-gearman=#{Formula.factory('gearman').prefix}"
     system "make"
@@ -24,7 +27,7 @@ class Php53Gearman < Formula
 
   def caveats; <<-EOS.undent
     To finish installing php53-gearman:
-      * Add the following line to #{etc}/php.ini:
+      * Add the following line to #{php.config_path}/php.ini:
         extension="#{prefix}/gearman.so"
       * Restart your webserver.
       * Write a PHP page that calls "phpinfo();"
