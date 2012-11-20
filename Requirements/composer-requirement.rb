@@ -9,12 +9,15 @@ class ComposerRequirement < HomebrewPhpRequirement
   end
 
   def message
+      result_indented = @result.to_s.sub(/^#!.*\n/, '').gsub(/^/, "    ")
 <<-EOS
-Composer PHP requirements check has failed.
+Composer PHP requirements check has failed. Checking environment with:
 
-#{COMMAND}
+    #{COMMAND}
 
-#{@result.to_s.sub /^#!.*\n/, ''}
+was failed by reason below:
+
+#{result_indented}
 EOS
   end
 end
